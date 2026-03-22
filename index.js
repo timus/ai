@@ -35,7 +35,7 @@ function parseMoney(input) {
 function printBanner() {
   console.log("\n" + "═".repeat(55));
   console.log("  PROPERTY BUYING GUIDE — Powered by OpenAI");
-  console.log("  Day 1: Tokens · Context · Hallucination");
+  console.log("  Session 1: Tokens · Context · Hallucination");
   console.log("═".repeat(55) + "\n");
 }
 
@@ -108,7 +108,7 @@ async function main() {
         console.log("   • ALL messages above are sent with EVERY new request");
         console.log("   • That's why prompt_tokens keep growing each call");
         console.log("   • At the context limit, oldest messages must be dropped");
-        console.log("   • RAG (Day 3) is partially about managing this efficiently\n");
+        console.log("   • RAG (Session 3) is partially about managing this efficiently\n");
         continue;
       }
 

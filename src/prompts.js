@@ -1,11 +1,53 @@
 /**
- * Prompt templates
+ * prompts.js — System prompt and user prompt templates
  *
- * DAY 1 LESSON — Prompt design affects everything:
- * - A vague system prompt → hallucinated interest rates, wrong grant amounts
- * - A grounded system prompt → honest, caveated, useful advice
+ * WHAT IS A PROMPT?
+ * A prompt is the text you send to the model. It has two parts:
+ *
+ *  1. System prompt — set by the developer. Defines the model's persona,
+ *     rules, and constraints. Sent on every call but hidden from the user.
+ *
+ *  2. User prompt — the actual message. In this app it contains the user's
+ *     financial data + pre-calculated figures.
+ *
+ * DAY 1 LESSON — Prompt design directly affects hallucination:
+ *
+ *  Vague prompt:
+ *    "You are a property advisor. Help the user."
+ *    → Model will confidently state interest rates, stamp duty amounts,
+ *      grant eligibility — most of which may be outdated or wrong.
+ *
+ *  Grounded prompt (what we use):
+ *    - Explicit rules: "never state interest rates as fact"
+ *    - Pre-calculated data: we send LVR, LMI, stamp duty as facts
+ *    - Model reasons about real numbers instead of guessing them
+ *
+ * This is called PROMPT ENGINEERING — shaping model behaviour through
+ * careful instruction, not code changes.
  */
 
+/**
+ * System prompt — the developer-controlled instructions sent on every API call.
+ *
+ * STRUCTURE BEST PRACTICES:
+ *  - Define the role clearly ("You are a property buying advisor")
+ *  - List explicit rules to prevent hallucination
+ *  - Tell the model what to focus on
+ *  - Keep it concise — every token here is paid for on every call
+ *
+ * WHY RULES MATTER:
+ * LLMs will answer any question confidently by default. Without explicit
+ * instructions, the model will happily state a specific interest rate,
+ * a grant amount, or legal advice — even if it's wrong or outdated.
+ *
+ * These rules don't eliminate hallucination — they instruct the model
+ * to be honest about uncertainty. True accuracy requires real data (RAG).
+ *
+ * TOKEN COST OF THIS PROMPT:
+ * This system prompt is sent with every single API call.
+ * If it's 150 tokens and you make 1,000 calls → 150,000 tokens in system prompts alone.
+ * Keeping system prompts tight is important at scale.
+ */
 const SYSTEM_PROMPT = `You are a property buying advisor. Your job is to give clear,
 step-by-step guidance based on the user's financial situation.
 
@@ -18,6 +60,44 @@ IMPORTANT RULES to avoid hallucination:
 Focus on: affordability, next steps, risks, and what to watch out for.
 Keep advice practical and actionable.`;
 
+/**
+ * Builds the user prompt — the financial situation sent to OpenAI for analysis.
+ *
+ * GROUNDING TECHNIQUE:
+ * Instead of asking "what is the stamp duty on a $600k property?" (hallucination risk),
+ * we calculate it in calculator.js and send the answer as a fact:
+ *   "Estimated Stamp Duty: $27,000 (varies by state — estimate only)"
+ *
+ * The model then reasons about our number rather than guessing its own.
+ * This is the core principle behind RAG (Retrieval Augmented Generation) —
+ * give the model accurate context so it doesn't have to make things up.
+ *
+ * PROMPT STRUCTURE:
+ * Structured sections (INPUTS, CALCULATED FIGURES, etc.) help the model
+ * parse the information clearly. Models perform better with organised input
+ * than with dense paragraphs of mixed data.
+ *
+ * NUMBERED QUESTIONS AT THE END:
+ * Asking specific numbered questions improves response quality.
+ * The model tends to address each point in order, giving you structured output
+ * rather than a vague general response.
+ *
+ * TOKEN COST NOTE:
+ * This prompt is only sent once (the first message). Follow-up questions are
+ * much shorter — but this full prompt stays in the conversation history,
+ * so it's included in the token count of every subsequent call.
+ * That's why prompt_tokens grow even when you ask a short follow-up question.
+ *
+ * @param {object} inputs - Raw user inputs from the CLI
+ * @param {number} inputs.propertyPrice     - Property price ($)
+ * @param {number} inputs.totalSavings      - Total savings ($)
+ * @param {number} inputs.salary            - Annual salary ($)
+ * @param {number} inputs.expenses          - Monthly expenses ($)
+ * @param {number} inputs.exchangeDepositPct - Exchange deposit (%)
+ *
+ * @param {object} calc - Pre-calculated figures from calculator.js
+ * @returns {string} The full user prompt string ready to send to OpenAI
+ */
 function buildInitialPrompt(inputs, calc) {
   return `Here is my financial situation for buying a property:
 
