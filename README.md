@@ -276,4 +276,4 @@ You: quit                             ← exit
 > Everything in AI architecture — RAG, agents, chunking, streaming — is ultimately about
 > managing these three things efficiently at scale.
 
-**Next → Day 2:** Embeddings and Vector Databases
+**Next** Embeddings and Vector Databases
