@@ -21,15 +21,23 @@ You scrape live property listings from Domain.com.au, embed them into a vector s
 
 ## How It Works
 
-```
-npm run prepare-data              npm start
-────────────────────              ──────────────────────────
-Scrape Domain.com.au       →      Load cached embeddings
-Convert listings to text   →      You ask a question
-Embed with OpenAI          →      Embed your question
-Cache vectors to disk      →      Cosine search → top 5 listings
-                                  Inject listings into prompt
-                                  LLM answers from real data only
+```mermaid
+flowchart LR
+    subgraph prepare["npm run prepare-data"]
+        A[Scrape Domain.com.au] --> B[Convert listings to text chunks]
+        B --> C[Embed with OpenAI\ntext-embedding-3-small]
+        C --> D[Cache vectors to disk\ndata/embeddings/*.json]
+    end
+
+    subgraph chat["npm start — per question"]
+        E[User question] --> F[Embed question\n→ 1536-dim vector]
+        F --> G[Cosine similarity search\nacross all stored vectors]
+        G --> H[Top 5 matching listings]
+        H --> I[Inject into prompt]
+        I --> J[LLM answers\nfrom real data only]
+    end
+
+    D -->|load once at startup| G
 ```
 
 ---
@@ -160,4 +168,3 @@ sudo apt-get install -y libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 \
 > Embeddings turn meaning into geometry. Retrieval finds the right slice. The model answers from facts, not predictions.
 
 **Previous:** [Day 1 — Tokens, Context, Hallucination](../day-1/README.md)
-**Next:** Day 3 — Agents and Tool Use
