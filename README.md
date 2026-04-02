@@ -1,56 +1,40 @@
-# AI Labs — Practical LLM Engineering
+# AI Labs — Learn AI Engineering by Building
 
-A series of hands-on CLI apps that teach real AI engineering concepts by making them **visible and measurable** — actual token counts, real costs, live API calls.
-
-Each day is a self-contained branch. Clone once, checkout the day you want.
+Hands-on CLI projects that teach core AI concepts by making them **visible in real time**.
+Each day is a self-contained project with its own dependencies and README.
 
 ---
 
-## The Series
+## Days
 
-| Branch | Topic | What you build | Key concepts |
+| Day | Topic | Use Case | Key Concepts |
 |---|---|---|---|
-| `day-1` | LLM Basics | Property buying advisor CLI | Tokens, context window, hallucination, prompt grounding |
-| `day-2` | Embeddings & RAG | Amenity analyser with naive vs RAG comparison | Embeddings, vector search, NeDB, cost comparison |
+| [Day 1](day-1/README.md) | LLM Basics | Property buying advisor | Tokens, context window, hallucination |
+| [Day 2](day-2/README.md) | RAG & Embeddings | Property guide chatbot | Embeddings, vector store, chunking, retrieval |
 
 ---
 
-## Quick Start
+## How to Use
+
+Each day folder is a standalone Node.js project:
 
 ```bash
-git clone <repo-url>
-
-# Day 1
-git checkout day-1
-npm install
-cp .env.example .env   # add your OpenAI API key
-npm start
-
-# Day 2
-git checkout day-2
-npm install
-cp .env.example .env
-npm run naive          # approach 1 — no RAG
-npm run rag            # approach 2 — embeddings + NeDB
+cd day-1 && npm install && npm start
+cd day-2 && npm install && npm start
 ```
 
-You need an [OpenAI API key](https://platform.openai.com/api-keys).
-A full session costs well under $0.01.
+Each requires an OpenAI API key in a `.env` file — see the `.env.example` in each folder.
 
 ---
 
-## How the series works
+## The Learning Arc
 
-Each day **builds on the previous one conceptually** but is independent in code.
-Start at Day 1. The README on each branch explains what you'll learn and how to run it.
-
-The domain is property buying throughout — real calculations, real APIs, real data —
-so the examples stay practical rather than toy-level.
-
----
-
-## Prerequisites
-
-- Node.js 18+
-- An OpenAI API key
-- No Docker, no databases to set up (Day 2 uses NeDB — embedded, zero config)
+```
+Day 1 — Tokens & Context
+  The model reads tokens, not words. You pay per token. Context is finite.
+  Hallucination happens when the model has no grounding.
+        ↓
+Day 2 — Embeddings & RAG
+  Grounding at scale: retrieve only relevant data before each call.
+  Same accuracy as stuffing all data in, at a fraction of the token cost.
+```

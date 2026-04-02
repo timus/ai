@@ -1,0 +1,17 @@
+{
+  "name": "day-2",
+  "version": "1.0.0",
+  "description": "RAG & Embeddings — Property Guide Chatbot",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "prepare-data": "node scripts/prepare-data.js"
+  },
+  "dependencies": {
+    "@puppeteer/browsers": "^2.13.0",
+    "dotenv": "^17.3.1",
+    "openai": "^6.32.0",
+    "puppeteer-core": "^24.40.0"
+  }
+}
