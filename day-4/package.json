@@ -1,0 +1,16 @@
+{
+  "name": "day-4-ai-agent-memory",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "prepare-data": "node scripts/prepare-data.js"
+  },
+  "dependencies": {
+    "@seald-io/nedb": "^4.0.2",
+    "@puppeteer/browsers": "^2.13.0",
+    "dotenv": "^17.3.1",
+    "openai": "^6.32.0",
+    "puppeteer-core": "^24.40.0"
+  }
+}
